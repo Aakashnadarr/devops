@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git url: 'https://github.com/your-repo/nginx-pipeline.git', branch: 'main'
+                git url: 'https://github.com/your-repo/nginx-pipeline.git', branch: 'master'
             }
         }
 
