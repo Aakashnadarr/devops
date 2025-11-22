@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git clone 'https://github.com/your-repo/nginx-pipeline.git', branch: 'master'
+                git url: 'https://github.com/Aakashnadarr/devops.git', branch: 'master'
             }
         }
 
@@ -41,4 +41,5 @@ pipeline {
         }
     }
 }
+
 
