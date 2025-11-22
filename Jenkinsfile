@@ -2,6 +2,12 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout Code') {
+            steps {
+                git url: 'https://github.com/your-repo/nginx-pipeline.git', branch: 'main'
+            }
+        }
+
         stage('Install Nginx') {
             steps {
                 sh '''
@@ -11,10 +17,10 @@ pipeline {
             }
         }
 
-        stage('Change index.html') {
+        stage('Copy index.html to Nginx') {
             steps {
                 sh '''
-                    echo "<h1>Welcome to My Custom NGINX Page - Deployed via Jenkins</h1>" | sudo tee /var/www/html/index.html
+                    sudo cp index.html /var/www/html/index.html
                 '''
             }
         }
@@ -28,10 +34,11 @@ pipeline {
 
     post {
         success {
-            echo 'Nginx deployed successfully!'
+            echo 'Nginx deployed successfully with custom index.html!'
         }
         failure {
             echo 'Deployment failed.'
         }
     }
 }
+
