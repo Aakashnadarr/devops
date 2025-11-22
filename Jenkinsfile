@@ -8,29 +8,43 @@ pipeline {
             }
         }
 
-        stage('Install Nginx') {
+        stage('Install Apache') {
             steps {
                 sh """
-                    if ! command -v nginx >/dev/null; then
-                        echo "Installing Nginx..."
+                    if ! command -v apache2 >/dev/null; then
+                        echo "Installing Apache..."
                         sudo apt update
-                        sudo apt install -y nginx
+                        sudo apt install -y apache2
                     else
-                        echo "Nginx already installed"
+                        echo "Apache already installed"
                     fi
                 """
             }
         }
 
-        stage('Copy index.html to Nginx') {
+        stage('Stop Nginx (if running)') {
+            steps {
+                sh '''
+                    if systemctl is-active --quiet nginx; then
+                        echo "Stopping Nginx..."
+                        sudo systemctl stop nginx
+                        sudo systemctl disable nginx
+                    else
+                        echo "Nginx is not running"
+                    fi
+                '''
+            }
+        }
+
+        stage('Copy index.html to Apache') {
             steps {
                 sh 'sudo cp index.html /var/www/html/index.html'
             }
         }
 
-        stage('Restart Nginx') {
+        stage('Restart Apache') {
             steps {
-                sh 'sudo systemctl restart nginx'
+                sh 'sudo systemctl restart apache2'
             }
         }
 
@@ -43,11 +57,10 @@ pipeline {
 
     post {
         success {
-            echo 'Nginx deployed successfully!'
+            echo 'Apache deployed successfully!'
         }
         failure {
             echo 'Deployment failed.'
         }
     }
 }
-
